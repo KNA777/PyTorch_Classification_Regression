@@ -1,6 +1,35 @@
-import torch
+import numpy as np
+import os
 
+import json
 
+from PIL import Image
 
-print(torch.__version__)
+if not os.path.isdir("dataset"):
+    os.mkdir("dataset")
 
+img = np.random.randint(0, 50, [100000, 64, 64], dtype=np.uint8)
+square = np.random.randint(100, 200, [100000, 15, 15], dtype=np.uint8)
+
+coords = np.empty([100000, 2])
+
+data = {}
+
+for i in range(img.shape[0]):
+    x = np.random.randint(20, 44)
+    y = np.random.randint(20, 44)
+
+    img[i, (y - 7):(y + 8), (x - 7):(x + 8)] = square[i]
+
+    coords[i] = [x, y]
+
+    name_img = f"img_{i}.jpeg"
+    path_img = os.path.join('dataset\\', name_img)
+
+    image = Image.fromarray(img[i])
+    image.save(path_img)
+
+    data[name_img] = [x, y]
+
+with open('dataset\\coords.json', 'w') as f:
+    json.dump(data, f, indent=2)
