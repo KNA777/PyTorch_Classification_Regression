@@ -70,3 +70,6 @@ train_data, val_data = random_split(train_data, [0.8, 0.2])
 train_loader = DataLoader(dataset=train_data, batch_size=16, shuffle=True)
 val_loader = DataLoader(dataset=val_data, batch_size=16, shuffle=False)
 test_loader = DataLoader(dataset=test_data, batch_size=16, shuffle=False)
+
+
+print(val_loader.multiprocessing_context)
