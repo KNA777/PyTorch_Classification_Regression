@@ -4,12 +4,14 @@ import numpy as np
 import torchvision
 
 from torchvision.datasets import ImageFolder
-from torch.utils.data import DataLoader, Dataset,random_split
+from torch.utils.data import DataLoader, Dataset, random_split
 
 from PIL import Image
+from transforms import transform as tr
 
 import matplotlib.pyplot as plt
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -21,9 +23,8 @@ class MNISTDataset(Dataset):
         self.transform = transform
 
         self.len_dataset = 0
-        self.data_list = [] # список кортежей состоящих из пути до
-                            # файла и позицией класс в one_hot векторе.
-
+        self.data_list = []  # список кортежей состоящих из пути до
+        # файла и позицией класс в one_hot векторе.
 
         for path_dir, dir_list, file_list in os.walk(path):
             # logger.info(path_dir)
@@ -41,29 +42,28 @@ class MNISTDataset(Dataset):
 
             self.len_dataset += len(file_list)
 
-
-
     def __len__(self):
         return self.len_dataset
 
     def __getitem__(self, index):
         file_path, target = self.data_list[index]
-        np_image = np.array(Image.open(file_path))
+        img = Image.open(file_path)
 
         if self.transform:
-            np_image = self.transform(np_image)
+            img = self.transform(img)
 
-        return np_image, target
+        return img, target
 
 
-train_data = MNISTDataset(r"D:\PyTorch_Dubinin\mnist\training")
-test_data = MNISTDataset(r"D:\PyTorch_Dubinin\mnist\testing")
+train_data = MNISTDataset(r"D:\PyTorch_Dubinin\mnist\training", transform=tr)
+test_data = MNISTDataset(r"D:\PyTorch_Dubinin\mnist\testing", transform=tr)
 
-# img, position = testing_data[3000]
-# print(testing_data.classes[position])
-# plt.imshow(img, cmap="gray")
-# plt.show()
-# print("Window closed")
+
+image, target = train_data[20000]
+print(type(image))
+print(image.shape)
+print(image.dtype)
+print(target)
 
 train_data, val_data = random_split(train_data, [0.8, 0.2])
 
@@ -72,4 +72,3 @@ val_loader = DataLoader(dataset=val_data, batch_size=16, shuffle=False)
 test_loader = DataLoader(dataset=test_data, batch_size=16, shuffle=False)
 
 
-print(val_loader.multiprocessing_context)
