@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import torch
 import torchvision
 
 from torchvision.datasets import ImageFolder
@@ -58,17 +59,8 @@ class MNISTDataset(Dataset):
 train_data = MNISTDataset(r"D:\PyTorch_Dubinin\mnist\training", transform=tr)
 test_data = MNISTDataset(r"D:\PyTorch_Dubinin\mnist\testing", transform=tr)
 
-
-image, target = train_data[20000]
-print(type(image))
-print(image.shape)
-print(image.dtype)
-print(target)
-
 train_data, val_data = random_split(train_data, [0.8, 0.2])
 
 train_loader = DataLoader(dataset=train_data, batch_size=16, shuffle=True)
 val_loader = DataLoader(dataset=val_data, batch_size=16, shuffle=False)
 test_loader = DataLoader(dataset=test_data, batch_size=16, shuffle=False)
-
-
